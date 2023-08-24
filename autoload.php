@@ -1,5 +1,5 @@
 <?php
-require "Model.php";
+require "model/Model.php";
 require "Component.php";
-$model = new Model();
 $component = new Component();
+$model = new Model();
