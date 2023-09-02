@@ -12,11 +12,14 @@ $brandData = $model->getAll($table);
                 <div class="flex justify-center items-center left-0 top-0 w-full h-full fixed z-20 bg-slate-500/70">
                         <div class="flex w-3/4 fixed justify-center text-center">
                                 <div class="bg-slate-200 w-3/4 rounded-lg">
-                                        <div class="text-lg rounded-ss-lg rounded-se-lg text-white font-bold py-4 mb-6 bg-[#d93337]">Edit Brand</div>
-
+                                        <div class="text-lg rounded-ss-lg rounded-se-lg text-white font-bold py-4 mb-6 bg-[#d93337]">
+                                                Edit Brand
+                                        </div>
+                                        
                                         <div class="px-4 my-8 text-start">
                                                 <?=$component->input("Brand Name", "Hikvis...", "text", 'brand_name_update');?>
-                                                <button onclick="updateBrand()"></button>
+                                                <button class="bg-[#d93337] h-10 px-4 my-2 rounded text-white" onclick="updateBrand()">Update</button>
+                                                <button class="bg-slate-500 h-10 px-4 my-2 rounded text-white" onclick="$('#modal_edit').addClass('hidden')">Close</button>
                                         </div>
                                 </div>
                         </div>
@@ -80,7 +83,7 @@ $brandData = $model->getAll($table);
                                         </button>
                                         <button
                                         class="w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6 sm:w-1/3 h-8 justify-center inline-block rounded bg-[#ffb60d] focus:outline-[#d93337]"
-                                        onclick="showModal('modal_edit', '{`id` => <?=$brand[0]?>, `brand_name` => <?=$brand[1]?>}')">
+                                        onclick="showModal('modal_edit', {id : '<?=$brand[0]?>', brand_name : '<?=$brand[1]?>'})">
                                                 <img
                                                 class="px-auto mx-auto"
                                                 src = "/ramexa-rma/ramexa-rma/assets/pencil.png"
@@ -144,7 +147,7 @@ $brandData = $model->getAll($table);
                                         </button>
                                         <button
                                         class=" w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6 sm:w-1/3 h-8 justify-center inline-block rounded bg-[#ffb60d] focus:outline-[#d93337]"
-                                        onclick="showModal('modal_edit', '')">
+                                        onclick="showModal('modal_edit', '{"id" => ${id}, "brand_name" => ${brand}')">
                                                 <img
                                                 class="px-auto mx-auto"
                                                 src = "/ramexa-rma/ramexa-rma/assets/pencil.png"
@@ -181,6 +184,7 @@ $brandData = $model->getAll($table);
         };
         function showModal(modal_name, data){
                 $('#'+modal_name).removeClass('hidden');
+                $("input[name='brand_name_update']").val(data.brand_name);
                 console.log(data);
         }
         function updateBrand(id, brand_name) {

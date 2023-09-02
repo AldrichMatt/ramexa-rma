@@ -12,6 +12,7 @@ include("../layout.php");
             <?php
             $component->card('add-item.php', 'item-new.png', 'add-item', "Add or Import Item(s)");
             $component->card('brand.php', 'brand.png', 'brands', "Brand Master");
+            $component->card('item-category.php', 'category.png', 'item category', "Category Master");
             $component->card('#', 'form-gear.png', 'warranty-master', "Warranty Master");
             ?>
         </div>
