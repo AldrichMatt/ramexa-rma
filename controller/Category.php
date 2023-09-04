@@ -29,8 +29,6 @@ require "../autoload.php";
             $category = htmlspecialchars($_POST['category']);
             $stock = htmlspecialchars($_POST['stock']);
             $model->updateTableSetWhere("item_category", '`item_name` = "'.$category.'",`brand_id` = "'.$brand_id.'", `stock` = "'.$stock.'"', "`id` = ".$id."");
-            $data = ['brand_name' => $brand_name , 'brand_id' => $brand_id, 'category' => $category, 'stock' => $stock];
-            echo json_encode($data);
             break;
 
         default:

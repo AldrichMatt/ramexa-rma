@@ -17,6 +17,8 @@ $brandData = $model->getAll($table);
                                         </div>
                                         
                                         <div class="px-4 my-8 text-start">
+                                                <input type="hidden" name="old_id_update">
+                                                <?=$component->input("Id", "xx.....", "text", 'id_update');?>
                                                 <?=$component->input("Brand Name", "Hikvis...", "text", 'brand_name_update');?>
                                                 <button class="bg-[#d93337] h-10 px-4 my-2 rounded text-white" onclick="updateBrand()">Update</button>
                                                 <button class="bg-slate-500 h-10 px-4 my-2 rounded text-white" onclick="$('#modal_edit').addClass('hidden')">Close</button>
@@ -31,6 +33,15 @@ $brandData = $model->getAll($table);
         <p class="text-2xl font-semibold"><?=$title;?></p>
         <!-- <div class="flex flex-row -m-2 mt-4 justify-center flex-wrap md:px-2 sm:px-24"> -->
         <div class="my-4">
+                <?php
+                        $component->label("Id")
+                ?>
+                <div class="flex xl:justify-center lg:justify-center my-2 w-full xl:flex-wrap lg:flex-wrap">
+                                <input type="number"
+                                class="flex w-full min-h-[auto] border-0 justify-center rounded-md px-4 py-2 pl-5 drop-shadow-[0_35px_35px_rgba(0,0,0,0.45)]  focus:outline-[#d93337]"
+                        id="brand_id"
+                        placeholder="xx...">
+                </div>
                 <?php
                         $component->label("Brand Name")
                 ?>
@@ -53,10 +64,12 @@ $brandData = $model->getAll($table);
                 </div>
           </div>
           
-<table class="table-auto mt-2 bg-white rounded-ss-lg rounded-se-lg drop-shadow-[0_35px_35px_rgba(0,0,0,0.45)] ">
-                <thead class="py-2 my-2 h-10">
+          <div id="table">
+                  <table class="table-auto mt-2 bg-white rounded-ss-lg w-full h-full rounded-se-lg drop-shadow-[0_35px_35px_rgba(0,0,0,0.45)] ">
+                          <thead class="py-2 my-2 h-10">
                         <tr class="my-2 py-2">
                                 <th>#</th>
+                                <th>Id</th>
                                 <th>Brand Name</th>
                                 <th>Action</th>
                         </tr>
@@ -67,7 +80,8 @@ $brandData = $model->getAll($table);
                                 foreach($brandData as $brand):
                         ?>
                                 <tr class="h-10 odd:bg-slate-300" id="brand<?=$brand[0];?>">
-                                        <td class="brand_id"><?=$i++;?></td>
+                                        <td class="id"><?=$i++;?></td>
+                                        <td id="brand_id"><?=$brand[0];?></td>
                                         <td id="brand_name"><?=$brand[1];?></td>
                                         <td>
                                         <button
@@ -92,13 +106,14 @@ $brandData = $model->getAll($table);
                                                 alt="edit"
                                                 ></img>
                                         </button>
-                                        </td>
+                                </td>
                                 </tr>
                         <?php
                                 endforeach;
                         ?>
                 </tbody>
         </table>
+        </div>
         </div>
         
 </div>
@@ -112,27 +127,35 @@ $brandData = $model->getAll($table);
 }
         $('#form_submit').on("click",function(e){
                 e.preventDefault();
+                var brand_id = $('#brand_id').val();
                 var brand_name = $('#brand').val();
+                if(sanitizeString(brand_id) == ''){
+                        alert("Please insert Brand id");
+                        exit;
+                }
                 if(sanitizeString(brand_name) == ''){
                         alert("Please insert Brand name");
                         exit;
                 }
-                var brand_id = $('tbody tr:last td:first').text();
+                var id = $('tbody tr:last td:first').text();
                 $.ajax({
                         method : "POST",
                         url : "/ramexa-rma/ramexa-rma/controller/Brand.php",
                         dataType : "json",
                         data : { 
                                 action : "add",
+                                brand_id : brand_id,
                                 brand : brand_name
                         },
                         complete: function(data){
                                 var tbody = document.getElementById("tbody");
                                 var brand = data.responseJSON.brand;
-                                var id = (parseInt(brand_id) + 1 == null) ? parseInt(brand_id) + 1 : 1 ;
+                                var brand_id = data.responseJSON.brand_id;
+                                var id = (parseInt(id) + 1 == null) ? parseInt(id) + 1 : 1 ;
                                 print = `
                                 <tr class="h-10 odd:bg-slate-300" id="brand${id}">
-                                        <td class="brand_id">${id}</td>
+                                        <td class="id">${id}</td>
+                                        <td class="brand_id">${brand_id}</td>
                                         <td id="brand_name">${brand}</td>
                                         <td>                                <button
                                         class="w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6 sm:w-1/3 h-8 justify-center inline-block rounded bg-[#d93337] focus:outline-[#d93337]"
@@ -147,7 +170,7 @@ $brandData = $model->getAll($table);
                                         </button>
                                         <button
                                         class=" w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6 sm:w-1/3 h-8 justify-center inline-block rounded bg-[#ffb60d] focus:outline-[#d93337]"
-                                        onclick="showModal('modal_edit', '{"id" => ${id}, "brand_name" => ${brand}')">
+                                        onclick="showModal('modal_edit', '{id => ${brand_id}, brand_name => ${brand}')">
                                                 <img
                                                 class="px-auto mx-auto"
                                                 src = "/ramexa-rma/ramexa-rma/assets/pencil.png"
@@ -184,21 +207,28 @@ $brandData = $model->getAll($table);
         };
         function showModal(modal_name, data){
                 $('#'+modal_name).removeClass('hidden');
+                $("input[name='old_id_update']").val(data.id);
+                $("input[name='id_update']").val(data.id);
                 $("input[name='brand_name_update']").val(data.brand_name);
                 console.log(data);
         }
-        function updateBrand(id, brand_name) {
-
+        function updateBrand() {
+                var brand_name = $("input[name='brand_name_update']").val();
+                var brand_id = $("input[name='id_update']").val();
+                var old_brand_id = $("input[name='old_id_update']").val();
                 $.ajax({
                         method : "POST",
                         url : "/ramexa-rma/ramexa-rma/controller/Brand.php",
                         dataType : "json",
                         data : { 
-                                action : "edit",
-                                brand : brand_name
+                                action : "update",
+                                brand_name : brand_name,
+                                old_brand_id : old_brand_id,
+                                brand_id : brand_id,
                         },
                         complete: function(data){
-                                
+                                $('#table').load(location.href + ' #table','100');
+                                $('#modal_edit').addClass('hidden');
                         }
 
                 })
