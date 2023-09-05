@@ -19,6 +19,11 @@ class Model{
         return mysqli_query($db,'SELECT * FROM '.$table.'')->fetch_all();
     }
 
+    public function getWhere($table, $select = '*', $condition){
+    global $db;
+    return mysqli_query($db, 'SELECT '.$select.' FROM `'.$table.'` WHERE '.$condition.'')->fetch_array();
+    }
+
     public function getAllWhere($table, $condition){
         global $db;
         return mysqli_query($db, 'SELECT * FROM `'.$table.'` WHERE '.$condition.'')->fetch_all();
