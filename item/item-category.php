@@ -6,6 +6,7 @@ include("../layout.php");
 
 $brandData = $model->getAll("brand");
 $categoryData = $model->getAll($table);
+$warrantyData = $model->getAll("warranty");
 ?>
 <!-- MODAL -->
     <div class="flex min-h-screen flex-col items-center justify-between md:px-4 sm:px-2">
@@ -21,8 +22,6 @@ $categoryData = $model->getAll($table);
                                         <div class="px-4 my-8 text-start">
                                                 <input type="hidden" name="id_update">
                                                 <?=$component->input("Category Name", "Hikvis...", "text", 'category_name_update');?>
-                                                <?=$component->input("Stock", "0", "number", 'stock_update');?>
-                                                
                                                 <?= $component->label("Brand Name");?>
                                                 <div class="my-2">
                                                         
@@ -30,6 +29,19 @@ $categoryData = $model->getAll($table);
                                                         <option value="">-</option>
                                                         <?php
                                                         foreach($brandData as $brand):
+                                                                ?>
+                                                        <option value="<?=$brand[0]?>"><?=$brand[1]?></option>
+                                                        
+                                                        <?php endforeach;?>
+                                                </select>
+                                        </div>
+                                        <?= $component->label("Waranty");?>
+                                        <div class="my-2">
+                                                        <select name="waranty_name_update" id="waranty" class="flex w-full min-h-[auto] border-0 justify-center rounded-md px-4 py-2 pl-5  focus:outline-[#d93337]">
+                                                                <option value="">-</option>
+                                                                <option value="">-</option>
+                                                                <?php
+                                                        foreach($warrantyData as $brand):
                                                                 ?>
                                                         <option value="<?=$brand[0]?>"><?=$brand[1]?></option>
                                                         
@@ -63,16 +75,24 @@ $categoryData = $model->getAll($table);
 
                 <?php endforeach;?>
               </select>
-              </div>
+            </div>
+              <!-- WARRANTY -->
+              
 
-              <!-- STOCK -->
-              <?php
-                $component->label("Stock")
+                      <?php
+                $component->label("Warranty")
                 ?>
             <div class="my-2">
-              <input type="number" name="stock" value="0" id="stock"  class="flex w-full min-h-[auto] border-0 justify-center rounded-md px-4 py-2 pl-5 drop-shadow-[0_10px_10px_rgba(0,0,0,0.45)]  focus:outline-[#d93337]">
+              <select name="warranty" id="warranty" class="flex w-full min-h-[auto] border-0 justify-center rounded-md px-4 py-2 pl-5 drop-shadow-[0_10px_10px_rgba(0,0,0,0.45)]  focus:outline-[#d93337]" >
+                <option value="">-</option>
+                <?php
+                        foreach($warrantyData as $warranty):
+                ?>
+                <option value="<?=$warranty[0]?>"><?=$warranty[1]?></option>
+                <?php endforeach;?>
+              </select>
         </div>
-
+                                
         <!-- CATEGORY NAME -->
                     <?php
                             $component->label("Item Category Name")
@@ -102,7 +122,7 @@ $categoryData = $model->getAll($table);
                                 <th>#</th>
                                 <th>Category Name</th>
                                 <th>Brand Name</th>
-                                <th>Stock</th>
+                                <th>Warranty</th>
                                 <th>Action</th>
                         </tr>
                 </thead>
@@ -115,7 +135,14 @@ $categoryData = $model->getAll($table);
                                         <td class="category_id"><?=$i++;?></td>
                                         <td id="category_name"><?=$category[1];?></td>
                                         <td id="brand_name"><?=$model->getAllWhere("brand","`id` = '".$category[2]."'")[0][1];?></td>
-                                        <td id="stock"><?=$category[3]?></td>
+                                        <td id="warranty"><?php 
+                                        if($category[3] == 0){
+                                                echo '-';
+                                        } else{
+                                                
+                                        echo $model->getAllWhere("warranty","`id` = '".$category[3]."'")[0][1];
+                                        }
+                                        ?></td>
                                         <td>
                                         <button
                                         class="w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6 sm:w-1/3 h-8 justify-center inline-block rounded bg-[#d93337] focus:outline-[#d93337]"
@@ -126,11 +153,11 @@ $categoryData = $model->getAll($table);
                                                 width="20px"
                                                 height="20px"
                                                 alt="delete"
-                                                ></img>
+                                                ></img> 
                                         </button>
                                         <button
                                         class="w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6 sm:w-1/3 h-8 justify-center inline-block rounded bg-[#ffb60d] focus:outline-[#d93337]"
-                                        onclick="showModal('modal_edit', {id : '<?=$category[0]?>', category_name : '<?=$category[1]?>', stock:'<?=$category[3];?>' ,brand_id : '<?=$category[2];?>' ,brand_name : '<?=$model->getAllWhere('brand','`id` = '.$category[2].'')[0][1];?>'})">
+                                        onclick="showModal('modal_edit', {id : '<?=$category[0]?>',waranty : '<?=$category[4]?>', waranty_name : '<?= $category[3] == 0 ? '-' : $model->getAllWhere('warranty', '`id` = '.$category[3].'')[0][1];?>',category_name : '<?=$category[1]?>',brand_id : '<?=$category[2];?>' ,brand_name : '<?=$model->getAllWhere('brand','`id` = '.$category[2].'')[0][1];?>'})">
                                                 <img
                                                 class="px-auto mx-auto"
                                                 src = "/ramexa-rma/ramexa-rma/assets/pencil.png"
@@ -162,7 +189,7 @@ $categoryData = $model->getAll($table);
                 e.preventDefault();
                 var brand_name = $('select[name=""]').val();
                 var category_name = $('#category').val();
-                var stock = $('#stock').val();
+                var warranty = $('#warranty').val();
                 if(sanitizeString(brand_name) == ''){
                         alert("Please Select a Brand");
                         exit;
@@ -181,21 +208,22 @@ $categoryData = $model->getAll($table);
                                 action : "add",
                                 brand : brand_name,
                                 category : category_name,
-                                stock : stock
+                                warranty : warranty
                         },
                         complete: function(data){
                                 var tbody = document.getElementById("tbody");
                                 var brand_name = data.responseJSON.brand_name;
                                 var brand_id = data.responseJSON.brand_id;
                                 var category = data.responseJSON.category;
-                                var stock = data.responseJSON.stock;
+                                var waranty = data.responseJSON.waranty;
+                                var waranty_name = data.responseJSON.waranty_name;
                                 var id = (parseInt(category_id) == null) ? 1 :parseInt(category_id) + 1 ;
                                 print = `
                                 <tr class="h-10 odd:bg-slate-300" id="category${id}">
                                         <td class="category_id">${id}</td>
                                         <td id="category_name">${category}</td>
                                         <td id="brand_name">${brand_name}</td>
-                                        <td id="stock">${stock}</td>
+                                        <td id="warranty">${waranty_name}</td>
                                         <td>
                                         <button
                                         class="w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6 sm:w-1/3 h-8 justify-center inline-block rounded bg-[#d93337] focus:outline-[#d93337]"
@@ -210,7 +238,7 @@ $categoryData = $model->getAll($table);
                                         </button>
                                         <button
                                         class="w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6 sm:w-1/3 h-8 justify-center inline-block rounded bg-[#ffb60d] focus:outline-[#d93337]"
-                                        onclick="showModal('modal_edit', {id : '${id}', category_name : '${category}', stock : '${stock}' ,brand_name : '${brand_name}', brand_id: '${brand_id}'})">
+                                        onclick="showModal('modal_edit', {id : '${id}', category_name : '${category}', waranty: '${waranty}', waranty_name: '${waranty_name}',brand_name : '${brand_name}', brand_id: '${brand_id}'})">
                                                 <img
                                                 class="px-auto mx-auto"
                                                 src = "/ramexa-rma/ramexa-rma/assets/pencil.png"
@@ -249,17 +277,20 @@ $categoryData = $model->getAll($table);
 
                 $('input[name="id_update"]').val(data.id);
                 $("input[name='category_name_update']").val(data.category_name);
-                $("input[name='stock_update']").val(parseInt(data.stock));
                 $("select[name='brand_name_update'] option:first").text(data.brand_name);
                 $("select[name='brand_name_update'] option:first").val(data.brand_id);
+                $("select[name='waranty_name_update'] option:first").text(data.waranty_name);
+                $("select[name='waranty_name_update'] option:first").val(data.waranty);
                 // console.log(data);
         }
         function updateCategory() {
                 var id = $('input[name="id_update"]').val();
                 var category_name = $("input[name='category_name_update']").val();
-                var stock = $("input[name='stock_update']").val();
-                var brand_name = $("select[name='brand_name_update'] option:first").text();
-                var brand_id = $("select[name='brand_name_update'] option:first").val();
+                var brand_name = $("select[name='brand_name_update']").text();
+                var brand_id = $("select[name='brand_name_update']").val();
+                var waranty_name = $("select[name='waranty_name_update']").text();
+                var waranty = $("select[name='waranty_name_update']").val();
+                console.log(waranty);
                 if(sanitizeString(brand_name) == ''){
                         alert("Please Select a Brand");
                         exit;
@@ -278,14 +309,13 @@ $categoryData = $model->getAll($table);
                                 id : id,
                                 category : category_name,
                                 brand_id : brand_id,
-                                brand_name : brand_name,
-                                stock : stock
+                                waranty : waranty,
                         },
                         complete: function(data){
                                 $('#modal_edit').addClass('hidden');
+                                // $('#modal_edit').load(location.href + ' #modal_edit','100');
                                 $('#table').load(location.href + ' #table','100');
                         }
-
                 })
         };
 </script>

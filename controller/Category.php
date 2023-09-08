@@ -11,9 +11,10 @@ require "../autoload.php";
             $brand = htmlspecialchars($_POST['brand']);
             $brand_name = $model->getAllWhere("brand","`id` = '".$brand."'")[0][1];
             $category = htmlspecialchars($_POST['category']);
-            $stock = htmlspecialchars($_POST['stock']);
-            $model->insertTableColVal("item_category", "id, item_name, brand_id, stock", "null, '".$category."', '".$brand."', '".$stock."'");
-            $data = ['brand_name' => $brand_name , 'brand_id' => $brand, 'category' => $category, 'stock' => $stock];
+            $waranty = htmlspecialchars($_POST['warranty']);
+            $waranty_name = $model->getWhere('warranty', 'warranty_name', '`id` = '.$waranty.'')[0];
+            $model->insertTableColVal("item_category", "id, item_name, brand_id, warranty_id", "null, '".$category."', '".$brand."', '".$waranty."'");
+            $data = ['brand_name' => $brand_name , 'brand_id' => $brand, 'category' => $category, 'warranty' => $waranty, 'waranty_name' => $waranty_name];
             echo json_encode($data);
             break;
             
@@ -24,11 +25,10 @@ require "../autoload.php";
             
         case 'update':
             $id = htmlspecialchars($_POST['id']);
-            $brand_name = htmlspecialchars($_POST['brand_name']);
             $brand_id = htmlspecialchars($_POST['brand_id']);
+            $waranty = htmlspecialchars($_POST['waranty']);
             $category = htmlspecialchars($_POST['category']);
-            $stock = htmlspecialchars($_POST['stock']);
-            $model->updateTableSetWhere("item_category", '`item_name` = "'.$category.'",`brand_id` = "'.$brand_id.'", `stock` = "'.$stock.'"', "`id` = ".$id."");
+            $model->updateTableSetWhere("item_category", '`item_name` = "'.$category.'",`brand_id` = "'.$brand_id.'", `warranty_id` = "'.$waranty.'"', "`id` = ".$id."");
             break;
 
         default:
