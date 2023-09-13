@@ -11,7 +11,6 @@ function getCorresponding($categoryId){
   $category = $model->getAllWhere('item_category','`id` = '.$categoryId.'');
   return $category;
 }
-
 ?>
 <script>
 
@@ -76,7 +75,6 @@ function deleteItem(itemId){
       $('#item_place').load(location + ' #item_place');
     }
   })
-  console.log(itemId);
 }
 function showModal(modal_name, data){
                 $('#modal_edit').removeClass('hidden');
@@ -123,6 +121,20 @@ function showModal(modal_name, data){
     }else{
       alert('S/N Already Added!')
     }};
+
+    async function uploadFile() {
+  let formData = new FormData(); 
+  formData.append("file", fileupload.files[0]);
+  console.log(fileupload.files[0]);
+  await fetch('/ramexa-rma/ramexa-rma/item/upload.php', {
+    method: "POST", 
+    body: formData
+  }); 
+  alert('The file has been uploaded successfully.');
+  $('#fileupload').val(''); 
+  location.reload();
+  }
+    
 </script>
     <div id="content" class="flex min-h-screen flex-col items-center justify-between md:px-4 sm:px-2">
       <div class="z-10 w-full max-w-5xl flex flex-col justify-center pt-16 text-sm ">
@@ -166,7 +178,13 @@ function showModal(modal_name, data){
         <?php
         $component->back("/ramexa-rma/ramexa-rma/item")
         ?>
-        <p class="text-2xl font-semibold"><?=$title;?></p>
+        <div class="columns-2">
+          <p class="text-2xl font-semibold"><?=$title;?></p>
+        <p class="text-end">
+          <input type="file" name="fileupload" accept=".csv" id="fileupload" onchange="uploadFile()" class="hidden">
+          <button onclick="document.getElementById('fileupload').click()" id="btn_file" class="bg-[#d93337] h-10 px-4 py-2 rounded text-white">+ Import</label>
+        </p>
+        </div>
             <?php
               $component->label("Brand");
             ?>

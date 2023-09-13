@@ -12,7 +12,7 @@ class Component{
      * $component->back("index.html")
      */
     public function back($href){
-        echo '<a href='.$href.' class="inline-flex transition ease-out duration-150 hover:underline">
+        echo '<a href='.$href.' class="inline-flex w-1/5 transition ease-out duration-150 hover:underline">
         <img
         class="mr-1"
         src="/ramexa-rma/ramexa-rma/assets/arrow-left.png"
