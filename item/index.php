@@ -13,7 +13,7 @@ include("../layout.php");
             $component->card('add-item.php', 'item-new.png', 'add-item', "Add or Import Item(s)");
             $component->card('brand.php', 'brand.png', 'brands', "Brand Master");
             $component->card('item-category.php', 'category.png', 'item category', "Category Master");
-            $component->card('#', 'form-gear.png', 'warranty-master', "Warranty Master");
+            $component->card('warranty.php', 'form-gear.png', 'warranty-master', "Warranty Master");
             ?>
         </div>
 <div class="m-4 p-4 drop-shadow-md">
