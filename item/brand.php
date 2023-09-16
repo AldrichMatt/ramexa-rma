@@ -148,41 +148,9 @@ $brandData = $model->getAll($table);
                                 brand : brand_name
                         },
                         complete: function(data){
-                                var tbody = document.getElementById("tbody");
-                                var brand = data.responseJSON.brand;
-                                var brand_id = data.responseJSON.brand_id;
-                                var id = (parseInt(id) + 1 == null) ? parseInt(id) + 1 : 1 ;
-                                print = `
-                                <tr class="h-10 odd:bg-slate-300" id="brand${id}">
-                                        <td class="id">${id}</td>
-                                        <td class="brand_id">${brand_id}</td>
-                                        <td id="brand_name">${brand}</td>
-                                        <td>                                <button
-                                        class="w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6 sm:w-1/3 h-8 justify-center inline-block rounded bg-[#d93337] focus:outline-[#d93337]"
-                                        onclick="deleteBrand('${id}','${brand}')">
-                                                <img
-                                                class="px-auto mx-auto"
-                                                src = "/ramexa-rma/ramexa-rma/assets/trash.png"
-                                                width="25px"
-                                                height="25px"
-                                                alt="delete"
-                                                ></img>
-                                        </button>
-                                        <button
-                                        class=" w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6 sm:w-1/3 h-8 justify-center inline-block rounded bg-[#ffb60d] focus:outline-[#d93337]"
-                                        onclick="showModal('modal_edit', '{id => ${brand_id}, brand_name => ${brand}')">
-                                                <img
-                                                class="px-auto mx-auto"
-                                                src = "/ramexa-rma/ramexa-rma/assets/pencil.png"
-                                                width="20px"
-                                                height="20px"
-                                                alt="edit"
-                                                ></img>
-                                        </button>
-                                        </td>
-                                </tr>
-                                        `;
-                                tbody.innerHTML += print;
+                                $('input').val('');
+                                $('textarea').val('');
+                                $('#table').load(location.href + ' #table','100');
                         }
 
                 })
@@ -199,8 +167,7 @@ $brandData = $model->getAll($table);
                                 brand : brand_name
                         },
                         complete: function(data){
-                                $('#brand'+id).remove();
-                                
+                                $('#table').load(location.href + ' #table','100');
                         }
 
                 })
@@ -210,7 +177,6 @@ $brandData = $model->getAll($table);
                 $("input[name='old_id_update']").val(data.id);
                 $("input[name='id_update']").val(data.id);
                 $("input[name='brand_name_update']").val(data.brand_name);
-                console.log(data);
         }
         function updateBrand() {
                 var brand_name = $("input[name='brand_name_update']").val();

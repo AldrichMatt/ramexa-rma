@@ -211,46 +211,9 @@ $warrantyData = $model->getAll("warranty");
                                 warranty : warranty
                         },
                         complete: function(data){
-                                var tbody = document.getElementById("tbody");
-                                var brand_name = data.responseJSON.brand_name;
-                                var brand_id = data.responseJSON.brand_id;
-                                var category = data.responseJSON.category;
-                                var waranty = data.responseJSON.waranty;
-                                var waranty_name = data.responseJSON.waranty_name;
-                                var id = (parseInt(category_id) == null) ? 1 :parseInt(category_id) + 1 ;
-                                print = `
-                                <tr class="h-10 odd:bg-slate-300" id="category${id}">
-                                        <td class="category_id">${id}</td>
-                                        <td id="category_name">${category}</td>
-                                        <td id="brand_name">${brand_name}</td>
-                                        <td id="warranty">${waranty_name}</td>
-                                        <td>
-                                        <button
-                                        class="w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6 sm:w-1/3 h-8 justify-center inline-block rounded bg-[#d93337] focus:outline-[#d93337]"
-                                        onclick="deleteCategory('${id}','${category}')">
-                                                <img
-                                                class="px-auto mx-auto"
-                                                src = "/ramexa-rma/ramexa-rma/assets/trash.png"
-                                                width="20px"
-                                                height="20px"
-                                                alt="delete"
-                                                ></img>
-                                        </button>
-                                        <button
-                                        class="w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6 sm:w-1/3 h-8 justify-center inline-block rounded bg-[#ffb60d] focus:outline-[#d93337]"
-                                        onclick="showModal('modal_edit', {id : '${id}', category_name : '${category}', waranty: '${waranty}', waranty_name: '${waranty_name}',brand_name : '${brand_name}', brand_id: '${brand_id}'})">
-                                                <img
-                                                class="px-auto mx-auto"
-                                                src = "/ramexa-rma/ramexa-rma/assets/pencil.png"
-                                                width="20px"
-                                                height="20px"
-                                                alt="edit"
-                                                ></img>
-                                        </button>
-                                        </td>
-                                </tr>
-                                        `;
-                                tbody.innerHTML += print;
+                                $('input').val('');
+                                $('textarea').val('');
+                                $('#table').load(location.href + ' #table','100');
                         }
 
                 })

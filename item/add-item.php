@@ -115,6 +115,8 @@ function showModal(modal_name, data){
           item_category : item_category,
         },
         complete : function(data){ 
+          $('input').val('');
+          $('textarea').val('');
           $('#item_place').load(location + ' #item_place');
         }
       })
